@@ -1,81 +1,95 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'login_page.dart'; // Importing the login page
+import 'package:http/http.dart' as http;
 
-class SignUpPage extends StatefulWidget {
-  const SignUpPage({Key? key, required this.title}) : super(key: key);
+class SignUpPage extends StatelessWidget {
+  final String? title;
 
-  final String title;
-
-  @override
-  State<SignUpPage> createState() => _SignUpPageState();
-}
-
-class _SignUpPageState extends State<SignUpPage> {
-  late String _username;
-  late String _email;
-  late String _password;
-
-  @override
-  void initState() {
-    super.initState();
-    _username = '';
-    _email = '';
-    _password = '';
-  }
-
-  void _handleUsernameChange(String value) {
-    setState(() {
-      _username = value;
-    });
-  }
-
-  void _handleEmailChange(String value) {
-    setState(() {
-      _email = value;
-    });
-  }
-
-  void _handlePasswordChange(String value) {
-    setState(() {
-      _password = value;
-    });
-  }
-
-  void _handleSignUp(BuildContext context) {
-    // For simplicity, I'm just printing the entered values
-    print('Username: $_username');
-    print('Email: $_email');
-    print('Password: $_password');
-
-    // Show dialog indicating account creation
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Account Created'),
-          content: const Text('Your account has been created successfully!'),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                // Navigate back to the login page
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const LoginPage(title: 'Login Page'),
-                  ),
-                );
-              },
-              child: const Text('OK'),
-            ),
-          ],
-        );
-      },
-    );
-  }
+  const SignUpPage({Key? key, this.title}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    String _username = '';
+    String _email = '';
+    String _password = '';
+
+    void _handleSignUp(BuildContext context) async {
+      try {
+        final response = await http.post(
+          Uri.parse('http://localhost:3000/auth/signup'),
+          headers: <String, String>{
+            'Content-Type': 'application/json',
+          },
+          body: jsonEncode(<String, String>{
+            'username': _username,
+            'email': _email,
+            'password': _password,
+          }),
+        );
+
+        if (response.statusCode == 201) {
+          // Account created successfully
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: const Text('Account Created'),
+                content:
+                const Text('Your account has been created successfully!'),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('OK'),
+                  ),
+                ],
+              );
+            },
+          );
+        } else {
+          // Account creation failed
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: const Text('Error'),
+                content:
+                const Text('Failed to create account. Please try again.'),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('OK'),
+                  ),
+                ],
+              );
+            },
+          );
+        }
+      } catch (e) {
+        // Handle any errors or exceptions
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Error'),
+              content: Text('An error occurred: $e'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
+      }
+    }
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: Padding(
@@ -100,29 +114,32 @@ class _SignUpPageState extends State<SignUpPage> {
             ),
             const SizedBox(height: 20),
             TextField(
-              onChanged: _handleUsernameChange,
+              onChanged: (value) => _username = value,
               decoration: InputDecoration(
-                border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
                 labelText: 'Username',
               ),
             ),
             const SizedBox(height: 20),
             TextField(
-              onChanged: _handleEmailChange,
+              onChanged: (value) => _email = value,
               decoration: InputDecoration(
-                border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
                 labelText: 'Email',
               ),
             ),
             const SizedBox(height: 20),
             TextField(
-              onChanged: _handlePasswordChange,
+              onChanged: (value) => _password = value,
               obscureText: true,
               decoration: InputDecoration(
-                border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
                 labelText: 'Password',
               ),
             ),
@@ -135,40 +152,16 @@ class _SignUpPageState extends State<SignUpPage> {
                 child: const Text('Sign Up'),
               ),
             ),
-            const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text(
-                  "Already have an account?",
-                  style: TextStyle(
-                    fontSize: 16,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                InkWell(
-                  onTap: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                          const LoginPage(title: 'Login Page')),
-                    );
-                  },
-                  child: const Text(
-                    " Log in",
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.blue,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ],
-            ),
           ],
         ),
       ),
     );
   }
+}
+
+void main() {
+  runApp(MaterialApp(
+    title: 'Sign Up Demo',
+    home: SignUpPage(),
+  ));
 }

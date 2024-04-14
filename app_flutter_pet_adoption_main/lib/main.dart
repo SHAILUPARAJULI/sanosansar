@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pet_app/screens/login_page.dart';
-import 'screens/root_app.dart';
 import 'theme/color.dart';
+import 'package:web_socket_channel/io.dart';
 
 void main() {
   runApp(MyApp());
