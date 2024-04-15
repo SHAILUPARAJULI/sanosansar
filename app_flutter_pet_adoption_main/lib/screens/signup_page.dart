@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+import 'login_page.dart';
+
 class SignUpPage extends StatelessWidget {
   final String? title;
 
@@ -54,8 +56,8 @@ class SignUpPage extends StatelessWidget {
             builder: (BuildContext context) {
               return AlertDialog(
                 title: const Text('Error'),
-                content:
-                const Text('Failed to create account. Please try again.'),
+                content: const Text(
+                    'Failed to create account. Please try again.'),
                 actions: <Widget>[
                   TextButton(
                     onPressed: () {
@@ -97,6 +99,8 @@ class SignUpPage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            Image.asset('images/paw.png'),
+            SizedBox(height: 20),
             const Text(
               'Sign Up',
               style: TextStyle(
@@ -151,6 +155,25 @@ class SignUpPage extends StatelessWidget {
                 onPressed: () => _handleSignUp(context),
                 child: const Text('Sign Up'),
               ),
+            ),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text("Already have an account? "),
+                InkWell(
+                  onTap: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=> const LoginPage(title: 'Login Page')));
+                  },
+                  child: const Text(
+                    "Login",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      decoration: TextDecoration.underline,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ],
         ),

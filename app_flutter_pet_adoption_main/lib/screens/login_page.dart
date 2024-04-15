@@ -1,6 +1,8 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:pet_app/screens/root_app.dart';
 import 'package:pet_app/screens/signup_page.dart';
-import 'root_app.dart'; // Importing the file where RootApp is defined
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key, required this.title}) : super(key: key);
@@ -35,10 +37,50 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _handleLogin(BuildContext context) async {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const RootApp()),
+    final Map<String, String> data = {
+      'username': _username,
+      'password': _password,
+    };
+
+    final response = await http.post(
+      Uri.parse('http://localhost:3000/auth/login'),
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(data),
     );
+
+    if (response.statusCode == 200) {
+      // User authenticated successfully
+      final Map<String, dynamic> responseData = jsonDecode(response.body);
+      final String token = responseData['token']; // Assuming the server sends back a token
+      // Store the token securely (e.g., using SharedPreferences or Flutter Secure Storage)
+      // Navigate to the home screen or any other authenticated page
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const RootApp()),
+      );
+    } else {
+      // Authentication failed
+      // Show an error message to the user
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Error'),
+            content: const Text('Failed to log in. Please try again.'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
   }
 
   @override
@@ -50,7 +92,8 @@ class _LoginPageState extends State<LoginPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Image.asset('images\paw.png'),
+            Image.asset('images/paw.png'),
+            SizedBox(height: 20),
             const Text(
               'Log In',
               style: TextStyle(
@@ -97,7 +140,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
             const SizedBox(height: 20),
             Row(
-              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Text(
                   "Don't have an account?",
