@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:pet_app/screens/signup_page.dart';
 import 'root_app.dart'; // Importing the file where RootApp is defined
 
@@ -35,10 +37,68 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _handleLogin(BuildContext context) async {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const RootApp()),
-    );
+    // Create a map containing login data
+    Map<String, String> loginData = {
+      'username': _username,
+      'password': _password,
+    };
+
+    // Send the login data to the PHP script using HTTP POST request
+    var url = 'http://192.168.1.66/dashboard/php_scripts/login.php'; // Replace with your PHP script URL
+    var response = await http.post(Uri.parse(url), body: loginData);
+
+    // Check the response from the PHP script
+    if (response.statusCode == 200) {
+      // Parse the response JSON
+      Map<String, dynamic> data = jsonDecode(response.body);
+
+      // Check if login was successful
+      if (data['success']) {
+        // If login successful, navigate to the root app
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const RootApp()),
+        );
+      } else {
+        // If login failed, show error message
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Error'),
+              content: Text(data['message']),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
+      }
+    } else {
+      // If request failed, show error message
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Error'),
+            content: Text('Failed to login. Please try again.'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
   }
 
   @override

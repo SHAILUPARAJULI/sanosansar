@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
 import 'add_pet_page.dart'; // Import the AddPetPage class from the new file
 
-class SettingPage extends StatelessWidget {
+class SettingPage extends StatefulWidget {
+  @override
+  _SettingPageState createState() => _SettingPageState();
+}
+
+class _SettingPageState extends State<SettingPage> {
+  bool _darkModeEnabled = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -14,25 +21,13 @@ class SettingPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildSectionHeader('Theme Settings'),
-            _buildSettingItem('Dark Mode', Icons.dark_mode),
+            _buildSwitchSettingItem('Dark Mode', _darkModeEnabled, _handleDarkModeChanged),
             _buildDivider(),
             _buildSectionHeader('Language Settings'),
             _buildSettingItem('Change Language', Icons.language),
             _buildDivider(),
-            _buildSectionHeader('Notification Preferences'),
-            _buildSwitchSettingItem('Receive Notifications', true),
-            _buildSwitchSettingItem('Sound Notifications', false),
-            _buildDivider(),
-            _buildSectionHeader('Account Settings'),
-            _buildSettingItem('Change Password', Icons.lock),
-            _buildSettingItem('Logout', Icons.exit_to_app),
-            _buildDivider(),
             _buildAdminFeatureButton('Add New Pet for Adoption', Icons.pets, context),
             _buildDivider(),
-            _buildSectionHeader('About and Legal'),
-            _buildSettingItem('App Version', Icons.info),
-            _buildSettingItem('Terms of Service', Icons.rule),
-            _buildSettingItem('Privacy Policy', Icons.privacy_tip),
           ],
         ),
       ),
@@ -63,16 +58,14 @@ class SettingPage extends StatelessWidget {
     );
   }
 
-  Widget _buildSwitchSettingItem(String title, bool value) {
+  Widget _buildSwitchSettingItem(String title, bool value, ValueChanged<bool> onChanged) {
     return Card(
       elevation: 4.0,
       margin: EdgeInsets.symmetric(vertical: 8.0),
       child: SwitchListTile(
         title: Text(title),
         value: value,
-        onChanged: (newValue) {
-          _handleSwitchValueChanged(title, newValue);
-        },
+        onChanged: onChanged,
       ),
     );
   }
@@ -162,17 +155,10 @@ class SettingPage extends StatelessWidget {
     }
   }
 
-  void _handleSwitchValueChanged(String title, bool newValue) {
-    // Handle switch value change based on the setting item title
-    switch (title) {
-      case 'Receive Notifications':
-      // Update notification preferences
-        break;
-      case 'Sound Notifications':
-      // Update sound notification preferences
-        break;
-      default:
-        break;
-    }
+  void _handleDarkModeChanged(bool newValue) {
+    setState(() {
+      _darkModeEnabled = newValue;
+      // Implement dark mode functionality here
+    });
   }
 }

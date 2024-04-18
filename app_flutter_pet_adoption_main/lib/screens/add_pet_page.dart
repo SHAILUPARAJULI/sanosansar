@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class AddPetPage extends StatefulWidget {
   @override
@@ -7,20 +8,19 @@ class AddPetPage extends StatefulWidget {
 
 class _AddPetPageState extends State<AddPetPage> {
   final _formKey = GlobalKey<FormState>();
-  String _imageUrl = '';
-  String _petName = '';
-  String _location = '';
-  bool _isFavorited = false;
-  String _description = '';
-  double _rate = 0.0;
-  String _id = '';
-  double _price = 0.0;
-  String _ownerName = '';
-  String _ownerPhotoUrl = '';
-  String _sex = '';
-  String _age = '';
-  String _color = '';
-  List<String> _album = [];
+  TextEditingController _imageUrlController = TextEditingController();
+  TextEditingController _petNameController = TextEditingController();
+  TextEditingController _locationController = TextEditingController();
+  TextEditingController _descriptionController = TextEditingController();
+  TextEditingController _rateController = TextEditingController();
+  TextEditingController _idController = TextEditingController();
+  TextEditingController _priceController = TextEditingController();
+  TextEditingController _ownerNameController = TextEditingController();
+  TextEditingController _ownerPhotoUrlController = TextEditingController();
+  TextEditingController _sexController = TextEditingController();
+  TextEditingController _ageController = TextEditingController();
+  TextEditingController _colorController = TextEditingController();
+  TextEditingController _albumController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +47,7 @@ class _AddPetPageState extends State<AddPetPage> {
                 ),
                 Divider(),
                 TextFormField(
+                  controller: _imageUrlController,
                   decoration: InputDecoration(labelText: 'Image URL'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -54,11 +55,9 @@ class _AddPetPageState extends State<AddPetPage> {
                     }
                     return null;
                   },
-                  onSaved: (value) {
-                    _imageUrl = value!;
-                  },
                 ),
                 TextFormField(
+                  controller: _petNameController,
                   decoration: InputDecoration(labelText: 'Name'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -66,85 +65,58 @@ class _AddPetPageState extends State<AddPetPage> {
                     }
                     return null;
                   },
-                  onSaved: (value) {
-                    _petName = value!;
-                  },
                 ),
                 TextFormField(
+                  controller: _locationController,
                   decoration: InputDecoration(labelText: 'Location'),
-                  onSaved: (value) {
-                    _location = value!;
-                  },
                 ),
                 TextFormField(
+                  controller: _descriptionController,
                   decoration: InputDecoration(labelText: 'Description'),
                   maxLines: 3,
-                  onSaved: (value) {
-                    _description = value!;
-                  },
                 ),
                 TextFormField(
+                  controller: _rateController,
                   decoration: InputDecoration(labelText: 'Rate'),
                   keyboardType: TextInputType.number,
-                  onSaved: (value) {
-                    _rate = double.parse(value!);
-                  },
                 ),
                 TextFormField(
+                  controller: _idController,
                   decoration: InputDecoration(labelText: 'ID'),
-                  onSaved: (value) {
-                    _id = value!;
-                  },
                 ),
                 TextFormField(
+                  controller: _priceController,
                   decoration: InputDecoration(labelText: 'Price'),
                   keyboardType: TextInputType.number,
-                  onSaved: (value) {
-                    _price = double.parse(value!);
-                  },
                 ),
                 TextFormField(
+                  controller: _ownerNameController,
                   decoration: InputDecoration(labelText: 'Owner Name'),
-                  onSaved: (value) {
-                    _ownerName = value!;
-                  },
                 ),
                 TextFormField(
+                  controller: _ownerPhotoUrlController,
                   decoration: InputDecoration(labelText: 'Owner Photo URL'),
-                  onSaved: (value) {
-                    _ownerPhotoUrl = value!;
-                  },
                 ),
                 TextFormField(
+                  controller: _sexController,
                   decoration: InputDecoration(labelText: 'Sex'),
-                  onSaved: (value) {
-                    _sex = value!;
-                  },
                 ),
                 TextFormField(
+                  controller: _ageController,
                   decoration: InputDecoration(labelText: 'Age'),
-                  onSaved: (value) {
-                    _age = value!;
-                  },
                 ),
                 TextFormField(
+                  controller: _colorController,
                   decoration: InputDecoration(labelText: 'Color'),
-                  onSaved: (value) {
-                    _color = value!;
-                  },
                 ),
                 TextFormField(
+                  controller: _albumController,
                   decoration: InputDecoration(labelText: 'Album URLs (comma-separated)'),
-                  onSaved: (value) {
-                    _album = value!.split(',');
-                  },
                 ),
                 SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      _formKey.currentState!.save();
-                      // Call a function to submit the form data
                       _submitForm();
                     }
                   },
@@ -164,23 +136,35 @@ class _AddPetPageState extends State<AddPetPage> {
     );
   }
 
-  void _submitForm() {
-    // Use the collected form data to create and save the new pet entry
-    // For example, you can print the data to see the values
-    print('Pet Name: $_petName');
-    print('Image URL: $_imageUrl');
-    print('Location: $_location');
-    print('Description: $_description');
-    print('Rate: $_rate');
-    print('ID: $_id');
-    print('Price: $_price');
-    print('Owner Name: $_ownerName');
-    print('Owner Photo URL: $_ownerPhotoUrl');
-    print('Sex: $_sex');
-    print('Age: $_age');
-    print('Color: $_color');
-    print('Album: $_album');
+  void _submitForm() async {
+    // Prepare pet data
+    Map<String, dynamic> petData = {
+      "imageUrl": _imageUrlController.text,
+      "petName": _petNameController.text,
+      "location": _locationController.text,
+      "description": _descriptionController.text,
+      "rate": double.parse(_rateController.text),
+      "petId": _idController.text,
+      "price": double.parse(_priceController.text),
+      "ownerName": _ownerNameController.text,
+      "ownerPhotoUrl": _ownerPhotoUrlController.text,
+      "sex": _sexController.text,
+      "age": _ageController.text,
+      "color": _colorController.text,
+      "albumUrls": _albumController.text.split(','),
+    };
 
+    // Send POST request to PHP script
+    Uri url = Uri.parse('http://your_server_address/add_pet.php');
+    var response = await http.post(url, body: petData);
+
+    // Check response status
+    if (response.statusCode == 200) {
+      // Pet added successfully
+      print('Pet added successfully');
+    } else {
+      // Error adding pet
+      print('Error adding pet: ${response.body}');
+    }
   }
 }
-
