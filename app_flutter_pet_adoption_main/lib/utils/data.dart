@@ -273,4 +273,8 @@ var chats = [
     "date": "5 hrs",
     "notify" : 0,
   },
+<<<<<<< Updated upstream
 ];
+=======
+];
+>>>>>>> Stashed changes

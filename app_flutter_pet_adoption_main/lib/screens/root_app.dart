@@ -84,7 +84,7 @@ class _RootAppState extends State<RootApp> with TickerProviderStateMixin {
       index: _activeTab,
       children: List.generate(
         barItems.length,
-        (index) => _buildAnimatedPage(barItems[index]["page"]),
+            (index) => _buildAnimatedPage(barItems[index]["page"]),
       ),
     );
   }
@@ -111,7 +111,7 @@ class _RootAppState extends State<RootApp> with TickerProviderStateMixin {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: List.generate(
           barItems.length,
-          (index) => BottomBarItem(
+              (index) => BottomBarItem(
             _activeTab == index
                 ? barItems[index]["active_icon"]
                 : barItems[index]["icon"],

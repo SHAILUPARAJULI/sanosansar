@@ -11,10 +11,22 @@ dependencies:
   cupertino_icons: ^1.0.6
   cached_network_image: ^3.1.0
   carousel_slider: ^4.0.0
+<<<<<<< Updated upstream
   google_fonts: ^2.1.1
   badges: ^2.0.3  # Updated badges dependency
   flutter_svg: ^0.22.0
   glassmorphism_ui: ^0.2.0
+=======
+  google_fonts: ^6.2.1
+  web_socket_channel: ^2.4.5
+  badges: ^2.0.3
+  flutter_svg: ^0.22.0
+  glassmorphism_ui: ^0.2.0
+  file_picker: ^8.0.1
+  image_picker: ^1.1.0
+  multiple_images_picker: ^1.0.1
+  http: ^1.2.1
+>>>>>>> Stashed changes
 
 dev_dependencies:
   flutter_test:

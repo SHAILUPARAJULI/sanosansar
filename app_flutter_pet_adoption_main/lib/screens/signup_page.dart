@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+<<<<<<< Updated upstream
+=======
+import 'package:http/http.dart' as http;
+>>>>>>> Stashed changes
 import 'login_page.dart'; // Importing the login page
 
 class SignUpPage extends StatefulWidget {
@@ -47,6 +51,7 @@ class _SignUpPageState extends State<SignUpPage> {
     print('Email: $_email');
     print('Password: $_password');
 
+<<<<<<< Updated upstream
     // Show dialog indicating account creation
     showDialog(
       context: context,
@@ -69,6 +74,40 @@ class _SignUpPageState extends State<SignUpPage> {
               child: const Text('OK'),
             ),
           ],
+=======
+    try {
+
+      var url = 'http://192.168.1.66/dashboard/php_scripts/signup.php';
+      var response = await http.post(Uri.parse(url), body: signUpData);
+
+      // Check the response status code
+      if (response.statusCode == 200) {
+        // If signup successful, show success dialog
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Account Created'),
+              content: const Text('Your account has been created successfully!'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    // Navigate back to the login page
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                        const LoginPage(title: 'Login Page'),
+                      ),
+                    );
+                  },
+                  child: const Text('OK'),
+                ),
+              ],
+            );
+          },
+>>>>>>> Stashed changes
         );
       },
     );
@@ -83,6 +122,8 @@ class _SignUpPageState extends State<SignUpPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            Image.asset('images/paw.png'),
+            const SizedBox(height: 20),
             const Text(
               'Sign Up',
               style: TextStyle(

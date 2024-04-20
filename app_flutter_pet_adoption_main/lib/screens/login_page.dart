@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pet_app/screens/signup_page.dart';
-import 'root_app.dart'; // Importing the file where RootApp is defined
+import 'root_app.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key, required this.title}) : super(key: key);
@@ -35,10 +35,75 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _handleLogin(BuildContext context) async {
+<<<<<<< Updated upstream
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const RootApp()),
     );
+=======
+    // Create a map containing login data
+    Map<String, String> loginData = {
+      'username': _username,
+      'password': _password,
+    };
+
+    // Send the login data to the PHP script using HTTP POST request
+    var url = 'http://192.168.1.66/dashboard/php_scripts/login.php';
+    var response = await http.post(Uri.parse(url), body: loginData);
+
+    // Check the response from the PHP script
+    if (response.statusCode == 200) {
+      // Parse the response JSON
+      Map<String, dynamic> data = jsonDecode(response.body);
+
+      // Check if login was successful
+      if (data['success']) {
+        // If login successful, navigate to the root app
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const RootApp()),
+        );
+      } else {
+        // If login failed, show error message
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Error'),
+              content: Text(data['message']),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
+      }
+    } else {
+      // If request failed, show error message
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Error'),
+            content: Text('Failed to login. Please try again.'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
+>>>>>>> Stashed changes
   }
 
   @override
@@ -50,7 +115,8 @@ class _LoginPageState extends State<LoginPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Image.asset('images\paw.png'),
+            Image.asset('images/paw.png'),
+            const SizedBox(height: 20),
             const Text(
               'Log In',
               style: TextStyle(
@@ -106,7 +172,7 @@ class _LoginPageState extends State<LoginPage> {
                 const SizedBox(width: 5),
                 InkWell(
                   onTap: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => const SignUpPage(title: "Sign Up")));
+                    Navigator.push(context, MaterialPageRoute(builder: (context) =>  SignUpPage(title: 'Signup',)));
                   },
                   child: const Text(
                     "Create an account",
