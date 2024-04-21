@@ -166,7 +166,7 @@ class _LoginPageState extends State<LoginPage> {
                 const SizedBox(width: 5),
                 InkWell(
                   onTap: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => const SignUpPage(title: "Sign Up")));
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => const SignUpPage()));
                   },
                   child: const Text(
                     "Create an account",

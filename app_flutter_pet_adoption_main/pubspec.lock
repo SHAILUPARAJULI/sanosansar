@@ -472,7 +472,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.5.1"
-<<<<<<< Updated upstream
   web_socket_channel:
     dependency: "direct main"
     description:
@@ -481,8 +480,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.4.5"
-=======
->>>>>>> Stashed changes
   win32:
     dependency: transitive
     description:
